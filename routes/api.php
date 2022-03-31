@@ -1,5 +1,6 @@
 <?php
-
+//dd(request()->path());
+//dd('hello');
 use Illuminate\Support\Facades\Route;
 
 /*
