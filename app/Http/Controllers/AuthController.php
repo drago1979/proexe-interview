@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Adapters\LoginAdapter;
 use App\Services\TokenService;
-use External\Bar\Auth\LoginService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -15,8 +14,7 @@ class AuthController extends Controller
      *
      * @return JsonResponse
      */
-//    public function login(Request $request): JsonResponse
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $content = json_decode($request->getContent());
 
@@ -33,14 +31,9 @@ class AuthController extends Controller
         // Case 2: $login or $password valid
         $token = (new TokenService())->getToken();
 
-        var_dump($token);
-
-//        exit();
-
         return response()->json([
             'status' => 'success',
             'token' => $token
         ]);
-
     }
 }

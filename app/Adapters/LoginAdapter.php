@@ -15,13 +15,21 @@ class LoginAdapter
     private $login;
     private $password;
 
+    /**
+     * LoginAdapter constructor.
+     * @param $login
+     * @param null $password
+     */
     public function __construct($login, $password = null)
     {
         $this->login = $login;
         $this->password = $password;
     }
 
-    public function login()
+    /**
+     * @return bool
+     */
+    public function login(): bool
     {
         if (preg_match("/^BAR_.*/", $this->login)) {
             return $this->loginServiceLogin();
@@ -38,7 +46,10 @@ class LoginAdapter
         return false;
     }
 
-    private function loginServiceLogin()
+    /**
+     * @return bool
+     */
+    private function loginServiceLogin(): bool
     {
         if ((new LoginService())->login($this->login, $this->password)) {
             return true;
@@ -47,7 +58,10 @@ class LoginAdapter
         return false;
     }
 
-    private function authenticatorLogin()
+    /**
+     * @return bool
+     */
+    private function authenticatorLogin(): bool
     {
         if ((new Authenticator())->auth($this->login, $this->password) instanceof Success) {
             return true;
@@ -56,7 +70,10 @@ class LoginAdapter
         return false;
     }
 
-    private function authWsLogin()
+    /**
+     * @return bool
+     */
+    private function authWsLogin(): bool
     {
         try {
             (new AuthWS())->authenticate($this->login, $this->password);

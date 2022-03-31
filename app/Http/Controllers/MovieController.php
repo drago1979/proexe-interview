@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Services\GetTitlesService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,13 +9,15 @@ use Illuminate\Http\Request;
 class MovieController extends Controller
 {
     /**
-     * @param Request $request
-     *
      * @return JsonResponse
      */
-    public function getTitles(Request $request): JsonResponse
+    public function getTitles(): JsonResponse
     {
         $titles = (new GetTitlesService())->getTitles();
+
+        if (array_key_exists('error', $titles)) {
+            return response()->json(['status' => 'failure']);
+        }
 
         return response()->json($titles);
     }
