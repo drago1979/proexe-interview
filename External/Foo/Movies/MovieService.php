@@ -13,8 +13,6 @@ class MovieService
      */
     public function getTitles(): array
     {
-        throw new ServiceUnavailableException();
-
         if (rand(0, 20) === 0) {
             throw new ServiceUnavailableException();
         }

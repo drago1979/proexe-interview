@@ -107,7 +107,7 @@ class GetTitlesService
             if ($this->failedAttemptCounter < $this->numberOfApiCallAttempts) {
                 ++$this->failedAttemptCounter;
 
-                $this->getFooTitlesApi();
+                $this->getBazTitlesApi();
             }
             return null;
         }
@@ -137,7 +137,7 @@ class GetTitlesService
             if ($this->failedAttemptCounter < $this->numberOfApiCallAttempts) {
                 ++$this->failedAttemptCounter;
 
-                $this->getFooTitlesApi();
+                $this->getBarTitlesApi();
             }
             return null;
         }
