@@ -20,7 +20,7 @@ class LoginAdapter
      * @param $login
      * @param null $password
      */
-    public function __construct($login, $password = null)
+    public function __construct($login, $password)
     {
         $this->login = $login;
         $this->password = $password;
@@ -47,11 +47,12 @@ class LoginAdapter
     }
 
     /**
+     * Calls BAR API
      * @return bool
      */
-    private function loginServiceLogin(): bool
+    protected function loginServiceLogin(): bool
     {
-        if ((new LoginService())->login($this->login, $this->password)) {
+        if (app(LoginService::class)->login($this->login, $this->password)) {
             return true;
         }
 
@@ -59,11 +60,13 @@ class LoginAdapter
     }
 
     /**
+     * Calls BAZ API
      * @return bool
      */
-    private function authenticatorLogin(): bool
+    protected function authenticatorLogin(): bool
     {
-        if ((new Authenticator())->auth($this->login, $this->password) instanceof Success) {
+        if (app(Authenticator::class)->auth($this->login, $this->password) instanceof Success) {
+
             return true;
         }
 
@@ -71,12 +74,13 @@ class LoginAdapter
     }
 
     /**
+     * Calls FOO API
      * @return bool
      */
-    private function authWsLogin(): bool
+    protected function authWsLogin(): bool
     {
         try {
-            (new AuthWS())->authenticate($this->login, $this->password);
+            app(AuthWS::class)->authenticate($this->login, $this->password);
 
             return true;
         } catch (AuthenticationFailedException $e) {
