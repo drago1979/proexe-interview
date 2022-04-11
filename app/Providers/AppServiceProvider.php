@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Adapters\SelectLoginAdapter;
+use App\Interfaces\LoginInterface;
 use External\Bar\Auth\LoginService;
 use External\Baz\Auth\Authenticator;
 use External\Foo\Auth\AuthWS;
@@ -27,6 +29,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AuthWS::class, function($app) {
             return new AuthWS();
         });
+
+        $this->app->bind(LoginInterface::class, function($app) {
+            return new SelectLoginAdapter();
+        });
+
 
     }
 

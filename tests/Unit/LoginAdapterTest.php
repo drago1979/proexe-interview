@@ -2,16 +2,14 @@
 
 namespace Tests\Unit;
 
-use App\Adapters\LoginAdapter;
+use App\Adapters\SelectLoginAdapter;
 use External\Bar\Auth\LoginService;
 use External\Baz\Auth\Authenticator;
 use External\Baz\Auth\Responses\Failure;
 use External\Baz\Auth\Responses\Success;
 use External\Foo\Auth\AuthWS;
 use External\Foo\Exceptions\AuthenticationFailedException;
-use phpDocumentor\Reflection\Types\Void_;
 use Tests\TestCase;
-use Mockery\MockInterface;
 
 class LoginAdapterTest extends TestCase
 {
@@ -26,86 +24,82 @@ class LoginAdapterTest extends TestCase
         $login = 'yyy'; // Wrong login
         $password = 'foo-bar-baz'; // Good password
 
-        $loginAdapter = new LoginAdapter($login, $password);
+        $loginAdapter = new SelectLoginAdapter();
 
-        $this->assertFalse($loginAdapter->login());
+        $this->assertFalse($loginAdapter->login($login, $password));
     }
 
     /**
-     * BAR login API is called when $login = "BAR_...".
+     * Mocked BAR login API is called when $login = "BAR_...".
      * @test
      * @return void
      */
-    public function bar_login_service_is_called()
+    public function bar_login_mocked_api_is_called()
     {
         $login = 'BAR_1'; // Any login
         $password = 'foo-bar-baz'; // Any password
 
-        $mock = \Mockery::mock(LoginAdapter::class, [$login, $password])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $mock->shouldReceive('loginServiceLogin')->once();
+        $mock = \Mockery::mock(SelectLoginAdapter::class);
+        $mock->shouldReceive('login')->once();
 
-        $mock->login();
+        $mock->login($login, $password);
     }
 
     /**
-     * BAZ login API is called when $login = "BAZ_...".
+     * Mocked BAZ login API is called when $login = "BAZ_...".
      * @test
      * @return void
      */
-    public function baz_login_service_is_called()
+    public function baz_login_mocked_api_is_called()
     {
         $login = 'BAZ_1'; // Any login
         $password = 'foo-bar-baz'; // Any password
 
-        $mock = \Mockery::mock(LoginAdapter::class, [$login, $password])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $mock->shouldReceive('authenticatorLogin')->once();
+        $mock = \Mockery::mock(SelectLoginAdapter::class);
 
-        $mock->login();
+        $mock->shouldReceive('login')->once();
+
+        $mock->login($login, $password);
     }
 
     /**
-     * FOO login API is called when $login = "FOO_...".
+     * Mocked FOO login API is called when $login = "FOO_...".
      * @test
      * @return void
      */
-    public function foo_login_service_is_called()
+    public function foo_login_mocked_api_is_called()
     {
         $login = 'FOO_1'; // Any login
         $password = 'foo-bar-baz'; // Any password
 
-        $mock = \Mockery::mock(LoginAdapter::class, [$login, $password])
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $mock->shouldReceive('authWsLogin')->once();
+        $mock = \Mockery::mock(SelectLoginAdapter::class);
 
-        $mock->login();
+        $mock->shouldReceive('login')->once();
+
+        $mock->login($login, $password);
     }
 
 
     /**
      * Confirm that adapter adequately converts BAR APIs "not authenticated"
      * return.
+     * Mocked API is called.
      *
      * @test
      * @return void
      */
-    public function bar_login_service_returns_unauthenticated()
+    public function bar_login_mocked_api_login_adapter_converts_adequately_unauthenticated()
     {
         $login = 'BAR_1'; // Any login
         $password = 'foo-bar-baz'; // Any password
 
         $mock = \Mockery::mock(LoginService::class);
-        $mock->makePartial()
-            ->shouldReceive('login')
+        $mock->shouldReceive('login')
             ->andReturn(false);
 
         app()->instance(LoginService::class, $mock);
 
-        $return = (new LoginAdapter($login, $password))->login();
+        $return = (new SelectLoginAdapter())->login($login, $password);
 
         $this->assertFalse($return);
     }
@@ -113,23 +107,23 @@ class LoginAdapterTest extends TestCase
     /**
      * Confirm that adapter adequately converts BAR APIs "is authenticated"
      * return.
+     * Mocked API is called.
      *
      * @test
      * @return void
      */
-    public function bar_login_service_returns_authenticated()
+    public function bar_login_mocked_api_login_adapter_converts_adequately_authenticated()
     {
         $login = 'BAR_1'; // Any login
         $password = 'foo-bar-baz'; // Any password
 
         $mock = \Mockery::mock(LoginService::class);
-        $mock->makePartial()
-            ->shouldReceive('login')
+        $mock->shouldReceive('login')
             ->andReturn(true);
 
         app()->instance(LoginService::class, $mock);
 
-        $return = (new LoginAdapter($login, $password))->login();
+        $return = (new SelectLoginAdapter())->login($login, $password);
 
         $this->assertTrue($return);
     }
@@ -137,23 +131,23 @@ class LoginAdapterTest extends TestCase
     /**
      * Confirm that adapter adequately converts BAZ APIs "not authenticated"
      * return.
+     * Mocked API is called.
      *
      * @test
      * @return void
      */
-    public function baz_login_service_returns_unauthenticated()
+    public function baz_login_mocked_api_login_adapter_converts_adequately_unauthenticated()
     {
         $login = 'BAZ_1'; // Any login
         $password = 'foo-bar-baz'; // Any password
 
         $mock = \Mockery::mock(Authenticator::class);
-        $mock->makePartial()
-            ->shouldReceive('auth')
+        $mock->shouldReceive('auth')
             ->andReturn(new Failure());
 
         app()->instance(Authenticator::class, $mock);
 
-        $return = (new LoginAdapter($login, $password))->login();
+        $return = (new SelectLoginAdapter())->login($login, $password);
 
         $this->assertFalse($return);
     }
@@ -161,24 +155,24 @@ class LoginAdapterTest extends TestCase
     /**
      * Confirm that adapter adequately converts BAZ APIs "is authenticated"
      * return.
+     * Mocked API is called.
      *
      * @test
      * @return void
      */
-    public function baz_login_service_returns_authenticated()
+    public function baz_login_mocked_api_login_adapter_converts_adequately_authenticated()
     {
         $login = 'BAZ_1'; // Any login
         $password = 'foo-bar-baz'; // Any password
 
         $mock = \Mockery::mock(Authenticator::class);
-        $mock->makePartial()
-            ->shouldReceive('auth')
+        $mock->shouldReceive('auth')
             ->andReturn(new Success());
 
         app()->instance(Authenticator::class, $mock);
 
 
-        $return = (new LoginAdapter($login, $password))->login();
+        $return = (new SelectLoginAdapter())->login($login, $password);
 
         $this->assertTrue($return);
     }
@@ -186,23 +180,23 @@ class LoginAdapterTest extends TestCase
     /**
      * Confirm that adapter adequately converts FOO APIs "not authenticated"
      * return.
+     * Mocked API is called.
      *
      * @test
      * @return void
      */
-    public function foo_login_service_returns_unauthenticated()
+    public function foo_login_mocked_api_login_adapter_converts_adequately_unauthenticated()
     {
         $login = 'FOO_1'; // Any login
         $password = 'foo-bar-baz'; // Any password
 
         $mock = \Mockery::mock(AuthWS::class);
-        $mock->makePartial()
-            ->shouldReceive('authenticate')
+        $mock->shouldReceive('authenticate')
             ->andThrow(new AuthenticationFailedException());
 
         app()->instance(AuthWS::class, $mock);
 
-        $return = (new LoginAdapter($login, $password))->login();
+        $return = (new SelectLoginAdapter())->login($login, $password);
 
         $this->assertFalse($return);
     }
@@ -210,23 +204,23 @@ class LoginAdapterTest extends TestCase
     /**
      * Confirm that adapter adequately converts FOO APIs "is authenticated"
      * return.
+     * Mocked API is called.
      *
      * @test
      * @return void
      */
-    public function foo_login_service_returns_authenticated()
+    public function foo_login_mocked_api_login_adapter_converts_adequately_authenticated()
     {
         $login = 'FOO_1'; // Any login
         $password = 'foo-bar-baz'; // Any password
 
         $mock = \Mockery::mock(AuthWS::class);
-        $mock->makePartial()
-            ->shouldReceive('authenticate')
+        $mock->shouldReceive('authenticate')
             ->andReturn(null);
 
         app()->instance(AuthWS::class, $mock);
 
-        $return = (new LoginAdapter($login, $password))->login();
+        $return = (new SelectLoginAdapter())->login($login, $password);
 
         $this->assertTrue($return);
     }
