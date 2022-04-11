@@ -3,8 +3,6 @@
 namespace Tests\Feature;
 
 use External\Bar\Auth\LoginService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase

@@ -9,9 +9,7 @@ use External\Baz\Auth\Responses\Failure;
 use External\Baz\Auth\Responses\Success;
 use External\Foo\Auth\AuthWS;
 use External\Foo\Exceptions\AuthenticationFailedException;
-use phpDocumentor\Reflection\Types\Void_;
 use Tests\TestCase;
-use Mockery\MockInterface;
 
 class LoginAdapterTest extends TestCase
 {
