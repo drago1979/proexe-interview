@@ -16,6 +16,7 @@ class AuthController extends Controller
      */
     public function login(Request $request): JsonResponse
     {
+        
         $content = json_decode($request->getContent());
 
         $login = $content->login;
