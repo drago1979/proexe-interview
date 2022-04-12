@@ -98,8 +98,7 @@ class AuthenticationTest extends TestCase
         $password = 'foo-bar-baz'; // Any password
 
         $mock = \Mockery::mock(LoginService::class);
-        $mock->makePartial()
-            ->shouldReceive('login')
+        $mock->shouldReceive('login')
             ->andReturn(false);
 
         app()->instance(LoginService::class, $mock);
@@ -131,8 +130,7 @@ class AuthenticationTest extends TestCase
         $password = 'foo-bar-baz'; // Any password
 
         $mock = \Mockery::mock(LoginService::class);
-        $mock->makePartial()
-            ->shouldReceive('login')
+        $mock->shouldReceive('login')
             ->andReturn(true);
 
         app()->instance(LoginService::class, $mock);
